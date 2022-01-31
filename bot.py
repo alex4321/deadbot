@@ -128,8 +128,8 @@ class Robot(discord.Client):
             return True
         return (time.time() - self._last_message_send) > TIMEOUT
     
-    async def _send_message(self, channel, message):
-        await channel.send(message)
+    async def _send_message(self, channel, message, original):
+        await channel.send(message, reference=original)
         self._last_message_send = time.time()
 
     async def on_message(self, message: discord.Message):
@@ -143,7 +143,7 @@ class Robot(discord.Client):
         for image in images:
             hash = str(imagehash.phash(image))
             if hash in self._reactions and self._can_send_message():
-                await self._send_message(message.channel, REACTIONS[hash])
+                await self._send_message(message.channel, REACTIONS[hash], message)
 
 
 if __name__ == "__main__":
